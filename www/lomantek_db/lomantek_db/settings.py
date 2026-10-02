@@ -80,11 +80,11 @@ WSGI_APPLICATION = 'lomantek_db.wsgi.application'
 DATABASES = {
     'default': {
         'ENGINE': 'django.db.backends.postgresql',
-        'NAME': 'lomantek_db',        # Сюда намертво вбиваем точное имя базы с учетом регистра!
-        'USER': 'jan',      # Наш Enterprise-администратор
+        'NAME': 'lomantek_db',
+        'USER': 'jan',      #
         'PASSWORD': os.getenv("DB_PASSWORD"),
-        'HOST': '127.0.0.1',           # Локальный хост в ОЗУ
-        'PORT': '5432',                # Дефолтный порт PostgreSQL
+        'HOST': '127.0.0.1',
+        'PORT': '5432',
     }
 }
 
