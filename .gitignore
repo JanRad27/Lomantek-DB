@@ -1,4 +1,5 @@
 .env
 www/lomantek_db/main/migrations
 www/lomantek_db/main/__pycache__
+www/lomantek_db/main/management/commands/__pycache__/
 venv

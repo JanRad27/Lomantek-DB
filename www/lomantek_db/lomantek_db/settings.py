@@ -81,7 +81,7 @@ DATABASES = {
     'default': {
         'ENGINE': 'django.db.backends.postgresql',
         'NAME': 'lomantek_db',
-        'USER': 'jan',      #
+        'USER': 'jan',
         'PASSWORD': os.getenv("DB_PASSWORD"),
         'HOST': '127.0.0.1',
         'PORT': '5432',
