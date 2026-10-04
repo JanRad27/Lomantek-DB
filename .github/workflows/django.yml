@@ -22,5 +22,5 @@ jobs:
         pip install -r requirements.cfg
     - name: Run Tests
       run: |
-        cd lomantek_db
+        cd www/lomantek_db
         python manage.py test
