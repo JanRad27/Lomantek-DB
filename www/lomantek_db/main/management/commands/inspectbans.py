@@ -20,8 +20,8 @@ class Command(BaseCommand):
                     self.stdout.write(f"Info: User {object.user.username} has unbanned!")
                     continue
 
-                if object.ban_permanent and object.ban_time is not None and object.ban_time + timedelta(days=365) >= timezone.now().date():
-                    self.stdout.write(f"Warning: User {object.user.username} has banned permanent and year has passed! Deleting them...")
+                if object.ban_permanent and object.ban_time is not None and object.ban_time + timedelta(days=365) <= timezone.now().date():
+                    self.stderr.write(f"Warning: User {object.user.username} has banned permanent and year has passed! Deleting them...")
                     object.user.delete()
                     continue
             else:
