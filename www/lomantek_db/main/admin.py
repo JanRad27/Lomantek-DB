@@ -21,3 +21,4 @@ class ID_ADMIN(admin.ModelAdmin):
 
 admin.site.register(models.Chicken_Impire_Player)
 admin.site.register(models.CI_Farm)
+admin.site.register(models.Token)

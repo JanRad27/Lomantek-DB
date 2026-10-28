@@ -21,6 +21,6 @@ from main import views
 
 urlpatterns = [
     path('admin/', admin.site.urls),
-    path(f"{settings.API_ROOT}/authenticate"),
-    path(f"{settings.API_ROOT}/profile")
+    path(f"{settings.API_ROOT}/authenticate", views.auth),
+    # path(f"{settings.API_ROOT}/profile")
 ]

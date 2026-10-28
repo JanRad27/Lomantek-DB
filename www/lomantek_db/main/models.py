@@ -50,7 +50,7 @@ class CI_Farm(models.Model):
         return f"Ферма в куриной империи игрока {self.player.target_id.user.username}"
 
 class Token(models.Model):
-    user = models.OneToOneField("main.Id", on_delete=models.CASCADE, related_name='+')
+    user = models.ForeignKey("auth.user", on_delete=models.CASCADE, related_name='+')
     value = models.TextField(null=False)
 
     class Meta():
@@ -59,4 +59,4 @@ class Token(models.Model):
         verbose_name_plural = "Токены авторизации"
 
     def __str__(self):
-        return f"Токен авторизации пользователя {self.user.user.username}"
+        return f"Токен авторизации пользователя {self.user.username}"
