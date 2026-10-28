@@ -17,7 +17,10 @@ Including another URLconf
 from django.contrib import admin
 from django.urls import path
 from django.conf import settings
+from main import views
 
 urlpatterns = [
     path('admin/', admin.site.urls),
+    path(f"{settings.API_ROOT}/authenticate"),
+    path(f"{settings.API_ROOT}/profile")
 ]
