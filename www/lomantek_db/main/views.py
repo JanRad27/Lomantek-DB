@@ -46,3 +46,32 @@ def auth(request):
             return JsonResponse({"code":500, "error":"Server error"}, status=500)
     else:
         return JsonResponse({"code":405, "error":"Method not allowed"}, status=405)
+
+@csrf_exempt
+def unauth(request):
+    if request.method == "POST":
+        try:
+            try:
+                request_data = json.loads(request.body)
+            except json.JSONDecodeError:
+                return JsonResponse({"code":400, "error":"Bad Request"}, status=400)
+
+            if "data" not in request_data or not isinstance(request_data["data"], dict):
+                return JsonResponse({"code":422, "error":"Unprocessable data"}, status=422)
+
+            target_token = request_data["data"].get("token") # Token value
+
+            if not target_token:
+                return JsonResponse({"code":422, "error":"Unprocessable data"}, status=422)
+
+            token_object = models.Token.objects.filter(value=target_token) # Database object of token
+
+            token_object.delete() # Deleting this token
+
+            return JsonResponse({"code":200}, status=200)
+
+        except Exception as e:
+            write_http_error(request, e)
+            return JsonResponse({"code":500, "error":"Server error"}, status=500)
+    else:
+        return JsonResponse({"code":405, "error":"Method not allowed"}, status=405)
