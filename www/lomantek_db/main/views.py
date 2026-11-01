@@ -291,6 +291,6 @@ def signup(request):
         token_row = models.Token(user=new_user, value=token)
         token_row.save()
 
-        return JsonResponse({"code":200, "data":{"token":token}})
+        return JsonResponse({"code":200, "data":{"token":token}}, status=200)
     else:
         return JsonResponse({"code":405, "error":"Method not allowed"}, status=405)
