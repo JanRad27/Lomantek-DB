@@ -17,7 +17,14 @@ Including another URLconf
 from django.contrib import admin
 from django.urls import path
 from django.conf import settings
+from main import views
 
 urlpatterns = [
     path('admin/', admin.site.urls),
+    path(f"{settings.API_ROOT}/authenticate", views.auth),
+    path(f"{settings.API_ROOT}/unauthenticate", views.unauth),
+    path(f"{settings.API_ROOT}/profile/username", views.profile_username),
+    path(f"{settings.API_ROOT}/profile/ci/progress/commit", views.write_ci_progress),
+    path(f"{settings.API_ROOT}/profile/ci/progress/get", views.get_ci_progress),
+    path(f"{settings.API_ROOT}/signup", views.signup)
 ]
