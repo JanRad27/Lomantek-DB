@@ -22,6 +22,19 @@ class Id(models.Model):
     def __str__(self):
         return f"Id of {self.user.username}"
 
+
+    def check_models(self):
+        player = Chicken_Impire_Player.objects.filter(target_id=self).first()
+        if player is None:
+            player = Chicken_Impire_Player(target_id=self)
+
+            player.save()
+
+        if CI_Farm.objects.filter(player=player).first() is None:
+            farm = CI_Farm(player=player)
+
+            farm.save()
+
 class Chicken_Impire_Player(models.Model):
     target_id = models.OneToOneField("main.Id", on_delete=models.CASCADE, related_name='+')
     permission = models.TextField(choices=[("player", "Игрок"), ("vip", "Vip-игрок"), ("admin", "Админ"), ("developer", "Разработчик")], default="player", null=False)
@@ -36,10 +49,12 @@ class Chicken_Impire_Player(models.Model):
 
 
 class CI_Farm(models.Model):
-    player = models.ForeignKey("Chicken_Impire_Player", on_delete=models.CASCADE, related_name='+')
+    player = models.OneToOneField("Chicken_Impire_Player", on_delete=models.CASCADE, related_name='+')
     money = models.IntegerField(null=False, default=0)
     chickens = models.JSONField(default=list, null=False)
     vmap = models.JSONField(default=dict, null=False)
+    eggs = models.IntegerField(default=0, null=False)
+    white_eggs = models.IntegerField(default=0, null=False)
 
     class Meta():
         db_table = "ci_farm"

@@ -22,5 +22,7 @@ from main import views
 urlpatterns = [
     path('admin/', admin.site.urls),
     path(f"{settings.API_ROOT}/authenticate", views.auth),
-    path(f"{settings.API_ROOT}/unauthenticate", views.unauth)
+    path(f"{settings.API_ROOT}/unauthenticate", views.unauth),
+    path(f"{settings.API_ROOT}/profile/username", views.profile_username),
+    path(f"{settings.API_ROOT}/profile/ci/progress/commit", views.write_ci_progress)
 ]
