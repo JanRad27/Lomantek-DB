@@ -174,6 +174,9 @@ def write_ci_progress(request):
         white_eggs = progress.get("white_eggs")
         chickens = progress.get("chickens")
         vmap = progress.get("vmap") # Virtual map of the game, not usable in first versions of game with DataBase
+        is_in_credit = progress.get("in_credit")
+        credit_summ = progress.get("credit_summ")
+        remaining_credit = progress.get("remaining_credit")
 
         if money is None or not isinstance(money, int):
             return JsonResponse({"code":422, "error":"Unprocessable data"}, status=422)
@@ -190,13 +193,24 @@ def write_ci_progress(request):
         if vmap is None or not isinstance(vmap, dict):
             return JsonResponse({"code":422, "error":"Unprocessable data"}, status=422)
 
+        if is_in_credit is None or not isinstance(is_in_credit, bool):
+            return JsonResponse({"code":422, "error":"Unprocessable data"}, status=422)
+
+        if credit_summ is None or not isinstance(credit_summ, int):
+            return JsonResponse({"code":422, "error":"Unprocessable data"}, status=422)
+
+        if remaining_credit is None or not isinstance(remaining_credit, int):
+            return JsonResponse({"code":422, "error":"Unprocessable data"}, status=422)
+
         token_object = models.Token.objects.filter(value=token).first()
         if token_object is None:
             return JsonResponse({"code":401, "error":"Unauthorized"}, status=401)
+
         user_object = token_object.user
         id = models.Id.objects.filter(user=user_object).first()
         player = models.Chicken_Impire_Player.objects.filter(target_id=id).first()
         farm = models.CI_Farm.objects.filter(player=player).first()
+
 
         if player is None or farm is None:
             id.check_models()
@@ -208,6 +222,9 @@ def write_ci_progress(request):
         farm.white_eggs = white_eggs
         farm.chickens = chickens
         farm.vmap = vmap
+        farm.is_in_credit = is_in_credit
+        farm.credit_summ = credit_summ
+        farm.remaining_credit = remaining_credit
 
         farm.save()
 
@@ -254,8 +271,11 @@ def get_ci_progress(request):
         white_eggs = farm.white_eggs
         chickens = farm.chickens
         vmap = farm.vmap
+        is_in_credit = farm.is_in_credit
+        credit_summ = farm.credit_summ
+        remaining_credit = farm.remaining_credit
 
-        return JsonResponse({"code":200, "data":{"progress":{"money":money, "eggs":eggs, "white_eggs":white_eggs, "chickens":chickens, "vmap":vmap}}}, status=200)
+        return JsonResponse({"code":200, "data":{"progress":{"money":money, "eggs":eggs, "white_eggs":white_eggs, "chickens":chickens, "vmap":vmap, "is_in_credit":is_in_credit, "credit_summ":credit_summ, "remaining_credit":remaining_credit}}}, status=200)
     else:
         return JsonResponse({"code":405, "error":"Method not allowed"}, status=405)
 
