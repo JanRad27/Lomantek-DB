@@ -8,7 +8,7 @@
 from django.db import models
 
 class Id(models.Model):
-    user = models.ForeignKey("auth.user", on_delete=models.CASCADE, db_column='user_id', related_name='+')
+    user = models.OneToOneField("auth.user", on_delete=models.CASCADE, db_column='user_id', related_name='+')
     is_banned = models.BooleanField(default=False)
     unban_time = models.DateField(blank=True, null=True)
     ban_time = models.DateField(blank=True, null=True)
@@ -21,3 +21,57 @@ class Id(models.Model):
 
     def __str__(self):
         return f"Id of {self.user.username}"
+
+
+    def check_models(self):
+        player = Chicken_Impire_Player.objects.filter(target_id=self).first()
+        if player is None:
+            player = Chicken_Impire_Player(target_id=self)
+
+            player.save()
+
+        if CI_Farm.objects.filter(player=player).first() is None:
+            farm = CI_Farm(player=player)
+
+            farm.save()
+
+class Chicken_Impire_Player(models.Model):
+    target_id = models.OneToOneField("main.Id", on_delete=models.CASCADE, related_name='+')
+    permission = models.TextField(choices=[("player", "Игрок"), ("vip", "Vip-игрок"), ("admin", "Админ"), ("developer", "Разработчик")], default="player", null=False)
+
+    class Meta():
+        db_table = "ci_player"
+        verbose_name = "Игрок куриной империи"
+        verbose_name_plural = "Игроки куриной империи"
+
+    def __str__(self):
+        return f"Игрок куриной империи от ID {self.target_id.user.username}"
+
+
+class CI_Farm(models.Model):
+    player = models.OneToOneField("Chicken_Impire_Player", on_delete=models.CASCADE, related_name='+')
+    money = models.IntegerField(null=False, default=0)
+    chickens = models.JSONField(default=list, null=False)
+    vmap = models.JSONField(default=dict, null=False)
+    eggs = models.IntegerField(default=0, null=False)
+    white_eggs = models.IntegerField(default=0, null=False)
+
+    class Meta():
+        db_table = "ci_farm"
+        verbose_name = "Ферма в куриной империи"
+        verbose_name_plural = "Фермы в куриной империи"
+
+    def __str__(self):
+        return f"Ферма в куриной империи игрока {self.player.target_id.user.username}"
+
+class Token(models.Model):
+    user = models.ForeignKey("auth.user", on_delete=models.CASCADE, related_name='+')
+    value = models.TextField(null=False)
+
+    class Meta():
+        db_table = "auth_token"
+        verbose_name = "Токен авторизации"
+        verbose_name_plural = "Токены авторизации"
+
+    def __str__(self):
+        return f"Токен авторизации пользователя {self.user.username}"

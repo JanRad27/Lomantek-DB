@@ -135,4 +135,4 @@ MAILERS = {
     },
 }
 
-API_ROOT = "/api"
+API_ROOT = "api"

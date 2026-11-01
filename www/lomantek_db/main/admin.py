@@ -18,3 +18,7 @@ def ban(modeladmin, request, queryset):
 @admin.register(models.Id)
 class ID_ADMIN(admin.ModelAdmin):
     actions = [ban]
+
+admin.site.register(models.Chicken_Impire_Player)
+admin.site.register(models.CI_Farm)
+admin.site.register(models.Token)
