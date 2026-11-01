@@ -6,6 +6,7 @@ from django.contrib.auth import authenticate
 import sys
 import json
 from django.views.decorators.csrf import csrf_exempt
+from django.contrib.auth.models import User
 
 def write_http_error(request, error):
     print(f"An error occurred on processing request! Request metadata: ip={request.get_host()}, headers={request.headers}, method={request.method}. Error: {type(error).__name__}: {error}", file=sys.stderr)
@@ -74,7 +75,7 @@ def unauth(request):
 
         target_token = request_data["data"].get("token") # Token value
 
-        if not target_token:
+        if not target_token or not isinstance(target_token, str):
             return JsonResponse({"code":422, "error":"Unprocessable data"}, status=422)
 
         token_object = models.Token.objects.filter(value=target_token).first() # Database object of token
@@ -107,7 +108,7 @@ def profile_username(request):
 
             token = request_data["data"].get("token")
 
-            if not token:
+            if not token or not isinstance(token, str):
                 return JsonResponse({"code":422, "error":"Unprocessable data"}, status=422)
 
             token_object = models.Token.objects.filter(value=token).first()
@@ -129,7 +130,7 @@ def profile_username(request):
 
             token = request_data["data"].get("token")
 
-            if not token:
+            if not token or not isinstance(token, str):
                 return JsonResponse({"code":422, "error":"Unprocessable data"}, status=422)
 
             token_object = models.Token.objects.filter(value=token).first()
@@ -255,5 +256,41 @@ def get_ci_progress(request):
         vmap = farm.vmap
 
         return JsonResponse({"code":200, "data":{"progress":{"money":money, "eggs":eggs, "white_eggs":white_eggs, "chickens":chickens, "vmap":vmap}}}, status=200)
+    else:
+        return JsonResponse({"code":405, "error":"Method not allowed"}, status=405)
+
+@csrf_exempt
+@http_handler
+def signup(request):
+    if request.method == "POST":
+        try:
+            request_data = json.loads(request.body)
+        except json.JSONDecodeError:
+            return JsonResponse({"code":400, "error":"Bad request"}, status=400)
+
+        if "data" not in request_data:
+            return JsonResponse({"code":422, "error":"Unprocessable data"}, status=422)
+
+        username = request_data["data"].get("username")
+        password = request_data["data"].get("password")
+        email = request_data["data"].get("email")
+
+        if username is None or password is None or email is None:
+            return JsonResponse({"code":422, "error":"Unprocessable data"}, status=422)
+
+        if not isinstance(username, str) or not isinstance(password, str) or not isinstance(email, str):
+            return JsonResponse({"code":422, "error":"Unprocessable data"}, status=422)
+
+        new_user = User.objects.create_user(username=username, password=password, email=email)
+        new_id = models.Id(user=new_user)
+        new_id.save()
+        new_id.check_models()
+
+        token = secrets.token_hex(20)
+
+        token_row = models.Token(user=new_user, value=token)
+        token_row.save()
+
+        return JsonResponse({"code":200, "data":{"token":token}})
     else:
         return JsonResponse({"code":405, "error":"Method not allowed"}, status=405)

@@ -25,5 +25,6 @@ urlpatterns = [
     path(f"{settings.API_ROOT}/unauthenticate", views.unauth),
     path(f"{settings.API_ROOT}/profile/username", views.profile_username),
     path(f"{settings.API_ROOT}/profile/ci/progress/commit", views.write_ci_progress),
-    path(f"{settings.API_ROOT}/profile/ci/progress/get", views.get_ci_progress)
+    path(f"{settings.API_ROOT}/profile/ci/progress/get", views.get_ci_progress),
+    path(f"{settings.API_ROOT}/signup", views.signup)
 ]
