@@ -56,6 +56,10 @@ class CI_Farm(models.Model):
     eggs = models.IntegerField(default=0, null=False)
     white_eggs = models.IntegerField(default=0, null=False)
 
+    is_in_credit = models.BooleanField(default=False, null=False)
+    credit_summ = models.IntegerField(default=0, null=False)
+    remaining_credit = models.IntegerField(default=0, null=False)
+
     class Meta():
         db_table = "ci_farm"
         verbose_name = "Ферма в куриной империи"
