@@ -177,6 +177,7 @@ def write_ci_progress(request):
         is_in_credit = progress.get("in_credit")
         credit_summ = progress.get("credit_summ")
         remaining_credit = progress.get("remaining_credit")
+        satiety = progress.get("satiety")
 
         if money is None or not isinstance(money, int):
             return JsonResponse({"code":422, "error":"Unprocessable data"}, status=422)
@@ -202,6 +203,9 @@ def write_ci_progress(request):
         if remaining_credit is None or not isinstance(remaining_credit, int):
             return JsonResponse({"code":422, "error":"Unprocessable data"}, status=422)
 
+        if satiety is None or not isinstance(satiety, int):
+            return JsonResponse({"code":422, "error":"Unprocessable data"}, status=422)
+
         token_object = models.Token.objects.filter(value=token).first()
         if token_object is None:
             return JsonResponse({"code":401, "error":"Unauthorized"}, status=401)
@@ -225,6 +229,7 @@ def write_ci_progress(request):
         farm.is_in_credit = is_in_credit
         farm.credit_summ = credit_summ
         farm.remaining_credit = remaining_credit
+        farm.satiety = satiety
 
         farm.save()
 
@@ -274,8 +279,9 @@ def get_ci_progress(request):
         is_in_credit = farm.is_in_credit
         credit_summ = farm.credit_summ
         remaining_credit = farm.remaining_credit
+        satiety = farm.satiety
 
-        return JsonResponse({"code":200, "data":{"progress":{"money":money, "eggs":eggs, "white_eggs":white_eggs, "chickens":chickens, "vmap":vmap, "is_in_credit":is_in_credit, "credit_summ":credit_summ, "remaining_credit":remaining_credit}}}, status=200)
+        return JsonResponse({"code":200, "data":{"progress":{"money":money, "eggs":eggs, "white_eggs":white_eggs, "chickens":chickens, "vmap":vmap, "is_in_credit":is_in_credit, "credit_summ":credit_summ, "remaining_credit":remaining_credit, "satiety":satiety}}}, status=200)
     else:
         return JsonResponse({"code":405, "error":"Method not allowed"}, status=405)
 

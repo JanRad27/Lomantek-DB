@@ -60,6 +60,8 @@ class CI_Farm(models.Model):
     credit_summ = models.IntegerField(default=0, null=False)
     remaining_credit = models.IntegerField(default=0, null=False)
 
+    satiety = models.IntegerField(default=0, null=False)
+
     class Meta():
         db_table = "ci_farm"
         verbose_name = "Ферма в куриной империи"
